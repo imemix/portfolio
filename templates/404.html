@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>404 Not Found</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fira Mono', 'Consolas', monospace;
+            background: #181818;
+            margin: 0;
+            padding: 0;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 0 80px 0;
+            flex: 1 0 auto;
+        }
+        .bubble {
+            background: #232323;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+            padding: 32px 40px;
+            margin-top: 60px;
+            margin-bottom: 32px;
+            font-size: 1.1em;
+            border-left: 8px solid #ffd600;
+        }
+        h1 {
+            color: #ffd600;
+            font-family: 'Fira Mono', monospace;
+            font-size: 2em;
+            margin-bottom: 24px;
+        }
+        .section-title {
+            color: #2196f3;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-family: 'Fira Mono', monospace;
+        }
+        p {
+            font-size: 1.2em;
+            color: #e0e0e0;
+            font-family: 'Fira Mono', monospace;
+        }
+        footer {
+            background: #232323;
+            color: #ffd600;
+            text-align: right;
+            padding: 20px;
+            font-family: 'Fira Mono', monospace;
+            border-top: 2px solid #4caf50;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 98%;
+            margin: 0;
+            flex-shrink: 0;
+            z-index: 999;
+        }
+        footer p {
+            margin: 0;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="bubble">
+            <span class="section-title"># Not Found</span>
+            <h1>404 Not Found</h1>
+            <p>Sorry, the page you are looking for could not be found.<br>
+            Please check the URL or return to the <a href="/" style="color:#2196f3;text-decoration:none;">homepage</a>.</p>
+        </div>
+    </div>
+    <footer>
+        <p># &copy; 2025 emix_web.py</p>
+    </footer>
+</body>
+</html>

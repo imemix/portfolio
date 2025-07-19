@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fira Mono', 'Consolas', monospace;
+            background: #181818;
+            margin: 0;
+            padding: 0;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 0 80px 0; /* Add bottom padding for footer */
+            flex: 1 0 auto;
+            width: 100%;
+        }
+        .bubble {
+            background: #232323;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+            padding: 32px 40px;
+            margin-bottom: 32px;
+            font-size: 1.1em;
+            border-left: 8px solid #4caf50;
+        }
+        .nav {
+            background: #232323;
+            padding: 16px 0;
+            text-align: left;
+            margin-bottom: 32px;
+            border-bottom: 2px solid #4caf50;
+        }
+        .nav a {
+            color: #ffd600;
+            text-decoration: none;
+            margin-right: 32px;
+            font-family: 'Fira Mono', monospace;
+            font-size: 1.1em;
+            transition: color 0.2s;
+        }
+        .nav a:hover {
+            color: #4caf50;
+        }
+        h1 {
+            color: #4caf50;
+            font-family: 'Fira Mono', monospace;
+            text-align: left;
+            margin: 40px 0 32px 0;
+            font-size: 2.2em;
+            letter-spacing: 2px;
+        }
+        .section-title {
+            color: #2196f3;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-family: 'Fira Mono', monospace;
+        }
+        .project-list-items {
+            list-style-type: none;
+            padding: 0;
+            display: grid;
+            gap: 10px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: #4caf50 #232323;
+            margin: 0 auto;
+            
+        }
+        .project-item {
+            background: #181818;
+            color: #e0e0e0;
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            padding: 24px 20px;
+            min-width: 220px;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-family: 'Fira Mono', monospace;
+            transition: border-color 0.2s;
+        }
+        .project-item:hover {
+            border-color: #ffd600;
+        }
+        footer {
+            background: #232323;
+            color: #ffd600;
+            text-align: right;
+            padding: 20px;
+            font-family: 'Fira Mono', monospace;
+            border-top: 2px solid #4caf50;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 98%;
+            margin: 0;
+            flex-shrink: 0;
+            z-index: 999;
+        }
+        footer p {
+            margin: 0;
+            font-size: 1em;
+        }
+        .discord-float-btn {
+            position: fixed;
+            right: 32px;
+            bottom: 32px;
+            z-index: 1000;
+            background: #232323;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+            padding: 8px;
+            transition: box-shadow 0.2s;
+        }
+        .discord-float-btn:hover {
+            box-shadow: 0 4px 16px #5865F2;
+            background: #5865F2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>projects_emix.py</h1>
+        <div class="nav">
+            <a href="/">Home</a>
+            <a href="/visualization">Visualization</a>
+            <a href="/projects">Projects</a>
+            <a href="/contact">Contact</a>
+        </div>
+        
+        
+        <div class="bubble">
+            <span class="section-title"># Projects</span>
+            <div class="project-list">
+                <ul class="project-list-items">
+                    {% for project in projects %}
+                    <li class="project-item">{{ project.name }}: <span style="color:#4caf50;">{{ project.language }}</span></li>
+                    
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="bubble">
+            
+            <span class="section-title" ># Contact me on any of the following</span>
+            <br>
+            <span class="section-title" style=" display: flex; justify-content: space-between;"># Socials:</span>
+            
+            <ul style="list-style:none; padding:0; margin:0;">
+                <li>
+                    <a href="https://github.com/imemix" target="_blank" style="color:#2196f3; text-decoration:none; font-family:'Fira Mono', monospace;">
+                        <img src="/static/github.png" alt="GitHub" style="width:24px;vertical-align:middle;margin-right:8px;">GitHub
+                    </a>
+                </li>
+                <li>
+                    <a href="https://twitter.com/Im_Emix" target="_blank" style="color:#fff; text-decoration:none; font-family:'Fira Mono', monospace;">
+                        <img src="/static/twitter.png" alt="Twitter" style="width:24px;vertical-align:middle;margin-right:8px;">Twitter
+                    </a>
+                </li>
+                <li>
+                    <a href="https://discord.gg/AZbpxu8yK4" target="_blank" style="color:#7289da; text-decoration:none; font-family:'Fira Mono', monospace;">
+                        <img src="/static/discord.png" alt="Discord" style="width:24px;vertical-align:middle;margin-right:8px;">Discord
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <footer>
+        <p># &copy; 2025 emix_web.py</p>
+    </footer>
+</body>
+</html>

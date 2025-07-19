@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About - My Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fira Mono', 'Consolas', monospace;
+            background: #181818;
+            margin: 0;
+            padding: 0;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 0 80px 0; /* Add bottom padding for footer */
+            flex: 1 0 auto;
+        }
+        .bubble {
+            background: #232323;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+            padding: 32px 40px;
+            margin-bottom: 32px;
+            font-size: 1.1em;
+            border-left: 8px solid #4caf50;
+        }
+        .nav {
+            background: #232323;
+            padding: 16px 0;
+            text-align: left;
+            margin-bottom: 32px;
+            border-bottom: 2px solid #4caf50;
+        }
+        .nav a {
+            color: #ffd600;
+            text-decoration: none;
+            margin-right: 32px;
+            font-family: 'Fira Mono', monospace;
+            font-size: 1.1em;
+            transition: color 0.2s;
+        }
+        .nav a:hover {
+            color: #4caf50;
+        }
+        h1 {
+            color: #4caf50;
+            font-family: 'Fira Mono', monospace;
+            text-align: left;
+            margin: 40px 0 32px 0;
+            font-size: 2.2em;
+            letter-spacing: 2px;
+        }
+        .section-title {
+            color: #2196f3;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-family: 'Fira Mono', monospace;
+        }
+        p {
+            font-size: 1.2em;
+            color: #e0e0e0;
+            font-family: 'Fira Mono', monospace;
+        }
+        footer {
+            background: #232323;
+            color: #ffd600;
+            text-align: right;
+            padding: 20px;
+            font-family: 'Fira Mono', monospace;
+            border-top: 2px solid #4caf50;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 98%;
+            margin: 0;
+            flex-shrink: 0;
+            z-index: 999;
+        }
+        footer p {
+            margin: 0;
+            font-size: 1em;
+        }
+        .discord-float-btn {
+            position: fixed;
+            right: 32px;
+            bottom: 32px;
+            z-index: 1000;
+            background: #232323;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+            padding: 8px;
+            transition: box-shadow 0.2s;
+        }
+        .discord-float-btn:hover {
+            box-shadow: 0 4px 16px #5865F2;
+            background: #5865F2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>about_emix.py</h1>
+        <div class="nav">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/projects">Projects</a>
+            <a href="/contact">Contact</a>
+        </div>
+        <div class="bubble">
+            <span class="section-title"># About Me</span>
+            <pre style="background:#181818;border-radius:6px;padding:24px 18px;color:#ffd600;font-family:'Fira Mono',monospace;font-size:1.1em;white-space:pre-wrap;margin:0;">
+            <span style="color:#4caf50;">class</span> <span style="color:#2196f3;">Emix</span>:
+                <span style="color:#ffd600;">"""</span>
+                Hi! I'm a 30-year-old programmer with a passion for creating silly games and quirky websites.
+                I love experimenting with <span style="color:#4caf50;">Python</span> and <span style="color:#2196f3;">HTML</span> to build playful projects.
+                My goal is to make the web a more fun and interesting place, one project at a time.
+
+                I enjoy learning new technologies and collaborating with creative people.
+                Programming, to me, is a way to express ideas and bring joy to others.
+                I like to add a personal touch and a bit of humor to everything I build, whether it's a game, a web app, or a tool.
+
+                When I'm not coding, you'll find me reading about science, playing strategy games, or discovering new music.
+                I'm always looking for new challenges and ways to grow as a developer and as a person.
+                <span style="color:#ffd600;">"""</span>
+            </pre>
+        </div>
+        <div class="bubble">
+
+            <span class="section-title" ># Contact me on any of the following</span>
+            <br>
+            <span class="section-title" style=" display: flex; justify-content: space-between;"># Socials:</span>
+            
+            <ul style="list-style:none; padding:0; margin:0;">
+                <li>
+                    <a href="https://github.com/imemix" target="_blank" style="color:#2196f3; text-decoration:none; font-family:'Fira Mono', monospace;">
+                        <img src="/static/github.png" alt="GitHub" style="width:24px;vertical-align:middle;margin-right:8px;">GitHub
+                    </a>
+                </li>
+                <li>
+                    <a href="https://twitter.com/Im_Emix" target="_blank" style="color:#fff; text-decoration:none; font-family:'Fira Mono', monospace;">
+                        <img src="/static/twitter.png" alt="Twitter" style="width:24px;vertical-align:middle;margin-right:8px;">Twitter
+                    </a>
+                </li>
+                <li>
+                    <a href="https://discord.gg/AZbpxu8yK4" target="_blank" style="color:#7289da; text-decoration:none; font-family:'Fira Mono', monospace;">
+                        <img src="/static/discord.png" alt="Discord" style="width:24px;vertical-align:middle;margin-right:8px;">Discord
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p># &copy; 2025 about_emix.py</p>
+    </footer>
+    
+</body>
+</html>
