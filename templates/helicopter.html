@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Python Helicopter Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #181818;
+            color: #ffd600;
+            font-family: 'Fira Mono', 'Consolas', monospace;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 0 80px 0;
+            flex: 1 0 auto;
+        }
+        .bubble {
+            background: #232323;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+            padding: 32px 40px;
+            margin-bottom: 32px;
+            font-size: 1.1em;
+            border-left: 8px solid #4caf50;
+        }
+        .nav {
+            background: #232323;
+            padding: 16px 0;
+            text-align: left;
+            margin-bottom: 32px;
+            border-bottom: 2px solid #4caf50;
+        }
+        .nav a {
+            color: #ffd600;
+            text-decoration: none;
+            margin-right: 32px;
+            font-family: 'Fira Mono', monospace;
+            font-size: 1.1em;
+            transition: color 0.2s;
+        }
+        .nav a:hover {
+            color: #4caf50;
+        }
+        h1 {
+            color: #4caf50;
+            font-family: 'Fira Mono', monospace;
+            text-align: left;
+            margin: 40px 0 32px 0;
+            font-size: 2.2em;
+            letter-spacing: 2px;
+        }
+        .section-title {
+            color: #2196f3;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-family: 'Fira Mono', monospace;
+        }
+        #gameCanvas {
+            background: #181818;
+            border: 2px solid #4caf50;
+            display: block;
+            margin: 0 auto 24px auto;
+            border-radius: 8px;
+        }
+        .instructions {
+            color: #ffd600;
+            font-family: 'Fira Mono', monospace;
+            font-size: 1.1em;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        footer {
+            background: #232323;
+            color: #ffd600;
+            text-align: right;
+            padding: 20px;
+            font-family: 'Fira Mono', monospace;
+            border-top: 2px solid #4caf50;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 98%;
+            margin: 0;
+            flex-shrink: 0;
+            z-index: 999;
+        }
+        footer p {
+            margin: 0;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>helicopter_game.py</h1>
+        <div class="nav">
+            <a href="/">Home</a>
+            <a href="/visualization">Visualization</a>
+            <a href="/projects">Projects</a>
+            <a href="/helicopter">Helicopter Game</a>
+            <a href="/contact">Contact</a>
+            {% if session.get('username') %}
+                <span style="color:#4caf50;">Logged in as {{ session['username'] }}</span>
+                <a href="/logout">Logout</a>
+            {% else %}
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            {% endif %}
+        </div>
+        <div class="bubble">
+            <span class="section-title"># Python Helicopter Game</span>
+            <div class="instructions">
+                <span style="color:#ffd600;">"""</span><br>
+                Press <span style="color:#4caf50;">Space</span> or <span style="color:#4caf50;">W</span> to fly up.<br>
+                Avoid the obstacles and survive as long as you can!<br>
+                <span style="color:#ffd600;">"""</span>
+            </div>
+            <canvas id="gameCanvas" width="700" height="350"></canvas>
+            <div id="score" class="instructions"></div>
+        </div>
+    </div>
+    <footer>
+        <p># &copy; 2025 helicopter_game.py</p>
+    </footer>
+    <script>
+        // Simple helicopter game logic
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let heliY = canvas.height / 2;
+        let heliV = 0;
+        let gravity = 0.1;
+        let lift = -3;
+        let obstacles = [];
+        let frame = 0;
+        let score = 0;
+        let gameOver = false;
+
+        function drawHelicopter(y) {
+            ctx.save();
+            ctx.translate(80, y);
+            ctx.fillStyle = "#ffd600";
+            ctx.fillRect(-30, -10, 60, 20); // body
+            ctx.fillStyle = "#4caf50";
+            ctx.fillRect(-10, -20, 20, 8); // rotor
+            ctx.fillStyle = "#2196f3";
+            ctx.fillRect(25, -5, 10, 10); // tail
+            ctx.restore();
+        }
+
+        function drawObstacle(x, gapY, gapH) {
+            ctx.fillStyle = "#4caf50";
+            ctx.fillRect(x, 0, 30, gapY - gapH / 2);
+            ctx.fillRect(x, gapY + gapH / 2, 30, canvas.height - (gapY + gapH / 2));
+        }
+
+        function resetGame() {
+            heliY = canvas.height / 2;
+            heliV = 0;
+            obstacles = [];
+            frame = 0;
+            score = 0;
+            gameOver = false;
+            document.getElementById('score').textContent = "";
+        }
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw helicopter
+            drawHelicopter(heliY);
+
+            // Move helicopter
+            heliV += gravity;
+            heliY += heliV;
+
+            // Add obstacles
+            if (frame % 90 === 0) {
+                let gapY = Math.random() * (canvas.height - 100) + 50;
+                obstacles.push({ x: canvas.width, gapY: gapY, gapH: 90 });
+            }
+
+            // Move and draw obstacles
+            for (let i = 0; i < obstacles.length; i++) {
+                obstacles[i].x -= 4;
+                drawObstacle(obstacles[i].x, obstacles[i].gapY, obstacles[i].gapH);
+
+                // Collision detection
+                if (
+                    obstacles[i].x < 110 && obstacles[i].x + 30 > 50 &&
+                    (heliY < obstacles[i].gapY - obstacles[i].gapH / 2 ||
+                     heliY > obstacles[i].gapY + obstacles[i].gapH / 2)
+                ) {
+                    gameOver = true;
+                }
+            }
+
+            // Remove passed obstacles
+            if (obstacles.length && obstacles[0].x < -30) {
+                obstacles.shift();
+                score++;
+            }
+
+            // Check boundaries
+            if (heliY < 0 || heliY > canvas.height) {
+                gameOver = true;
+            }
+
+            // Draw score
+            ctx.font = "bold 22px 'Fira Mono', monospace";
+            ctx.fillStyle = "#ffd600";
+            ctx.fillText("Score: " + score, 20, 30);
+
+            if (gameOver) {
+                ctx.font = "bold 32px 'Fira Mono', monospace";
+                ctx.fillStyle = "#ff5722";
+                ctx.fillText("Game Over!", canvas.width / 2 - 100, canvas.height / 2);
+                document.getElementById('score').textContent = "Final Score: " + score + " | Press R to restart";
+                return;
+            }
+
+            frame++;
+            requestAnimationFrame(gameLoop);
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (gameOver && (e.key === 'r' || e.key === 'R')) {
+                resetGame();
+                gameLoop();
+            }
+            if (e.code === 'Space' || e.key === 'w' || e.key === 'W') {
+                heliV = lift;
+            }
+        });
+
+        resetGame();
+        gameLoop();
+    </script>
+</body>
+</html>

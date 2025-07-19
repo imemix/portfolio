@@ -32,6 +32,7 @@ def hash_password(password):
 
 
 # ----- routes -----
+
 # Route for the home page
 @app.route('/')
 def home():
@@ -155,6 +156,12 @@ def register():
 def logout():
     session.pop('username', None)
     return redirect(url_for('home'))
+# Route for the helicopter game page
+@app.route('/helicopter')
+def helicopter():
+    return render_template('helicopter.html')
+
+
 
 
 # ----- Error handlers -----
