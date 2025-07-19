@@ -2,26 +2,45 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from utils import DISCORD_WEBHOOK_URL, encrypt_message, decrypt_message
 import requests
 import re
+import sqlite3
+import hashlib
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Change this to a secure random value
 
-# Simple in-memory user store for demo
-USERS = {}
+def get_db():
+    conn = sqlite3.connect('users.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
+def init_db():
+    with get_db() as db:
+        db.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL
+            )
+        ''')
+
+init_db()
+
+def hash_password(password):
+    return hashlib.sha256(password.encode('utf-8')).hexdigest()
+
+
+
+
+# ----- routes -----
+# Route for the home page
 @app.route('/')
 def home():
     return render_template('index.html')
-
-
-
+# Route for the about page
 @app.route('/about')
 def about():
     return render_template('about.html')
-
-
-
-
+# Route for the visualization page
 @app.route('/visualization')
 def visualization():
     """    Route for visualization page.
@@ -29,8 +48,7 @@ def visualization():
     # Placeholder for visualization content
     # For now, just render a static page
     return render_template('visualization.html')
-
-
+# Route for projects page
 @app.route('/projects')
 def projects():
     # This route can be expanded to include dynamic project data
@@ -44,9 +62,7 @@ def projects():
     ]
     
     return render_template('projects.html', projects=projects_data)
-
-
-
+# Route for the contact form
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     message = None
@@ -100,21 +116,22 @@ def contact():
         message = f"Thank you, {name}! We have received your message.<br><br><strong>Encrypted:</strong><br><pre>{encrypted_text}</pre>"
 
     return render_template('contact.html', message=message)
-
+# Route for user login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        user = USERS.get(username)
-        if user and user['password'] == password:
+        db = get_db()
+        user = db.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
+        if user and user['password'] == hash_password(password):
             session['username'] = username
             return redirect(url_for('home'))
         else:
             error = "Invalid username or password."
     return render_template('login.html', error=error)
-
+# Route for user registration
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     error = None
@@ -123,19 +140,24 @@ def register():
         password = request.form.get('password')
         if not username or not password:
             error = "Username and password required."
-        elif username in USERS:
-            error = "Username already exists."
         else:
-            USERS[username] = {'password': password}
-            session['username'] = username
-            return redirect(url_for('home'))
+            db = get_db()
+            try:
+                db.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, hash_password(password)))
+                db.commit()
+                session['username'] = username
+                return redirect(url_for('home'))
+            except sqlite3.IntegrityError:
+                error = "Username already exists."
     return render_template('register.html', error=error)
-
+# Route for user logout
 @app.route('/logout')
 def logout():
     session.pop('username', None)
     return redirect(url_for('home'))
 
+
+# ----- Error handlers -----
 @app.errorhandler(400)
 def bad_request(e):
     return render_template('400.html'), 400
