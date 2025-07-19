@@ -124,6 +124,7 @@
             box-shadow: 0 4px 16px #5865F2;
             background: #5865F2;
         }
+        
     </style>
 </head>
 <body>
@@ -134,19 +135,29 @@
             <a href="/visualization">Visualization</a>
             <a href="/projects">Projects</a>
             <a href="/contact">Contact</a>
+            
+            {% if session.get('username') %}
+                <span style="color:#4caf50;">Logged in as {{ session['username'] }}</span>
+                <a href="/logout">Logout</a>
+            {% else %}
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            {% endif %}
         </div>
         
         
         <div class="bubble">
             <span class="section-title"># Projects</span>
-            <div class="project-list">
-                <ul class="project-list-items">
-                    {% for project in projects %}
-                    <li class="project-item">{{ project.name }}: <span style="color:#4caf50;">{{ project.language }}</span></li>
-                    
-                    {% endfor %}
-                </ul>
-            </div>
+            <pre style="background:#181818;border-radius:6px;padding:24px 18px;color:#ffd600;font-family:'Fira Mono',monospace;font-size:1.1em;white-space:pre-wrap;margin:0;">
+            <span style="color:#4caf50;">class</span> <span style="color:#2196f3;">Projects</span>:
+                <span style="color:#ffd600;">"""</span>
+                Here are some of my notable projects:
+                <span style="color:#ffd600;">"""</span>
+            {% for project in projects %}
+                <span style="color:#4caf50;">def</span> <span style="color:#2196f3;">{{ project.name.replace(' ', '_') }}</span>():
+                    <span style="color:#ffd600;">return</span> "<span style="color:#2196f3;">{{ project.language }}</span>"
+            {% endfor %}
+            </pre>
         </div>
         <div class="bubble">
             

@@ -1,17 +1,17 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, session
 from utils import DISCORD_WEBHOOK_URL, encrypt_message, decrypt_message
 import requests
 import re
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Change this to a secure random value
+
+# Simple in-memory user store for demo
+USERS = {}
 
 @app.route('/')
 def home():
     return render_template('index.html')
-
-
-
-
 
 
 
@@ -21,13 +21,13 @@ def about():
 
 
 
+
 @app.route('/visualization')
 def visualization():
     """    Route for visualization page.
     This can be expanded to include dynamic visualizations or static content.   """
     # Placeholder for visualization content
     # For now, just render a static page
-    
     return render_template('visualization.html')
 
 
@@ -44,11 +44,6 @@ def projects():
     ]
     
     return render_template('projects.html', projects=projects_data)
-
-
-
-
-
 
 
 
@@ -106,8 +101,40 @@ def contact():
 
     return render_template('contact.html', message=message)
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        user = USERS.get(username)
+        if user and user['password'] == password:
+            session['username'] = username
+            return redirect(url_for('home'))
+        else:
+            error = "Invalid username or password."
+    return render_template('login.html', error=error)
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    error = None
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if not username or not password:
+            error = "Username and password required."
+        elif username in USERS:
+            error = "Username already exists."
+        else:
+            USERS[username] = {'password': password}
+            session['username'] = username
+            return redirect(url_for('home'))
+    return render_template('register.html', error=error)
 
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('home'))
 
 @app.errorhandler(400)
 def bad_request(e):

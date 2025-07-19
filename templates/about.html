@@ -111,6 +111,13 @@
             <a href="/about">About</a>
             <a href="/projects">Projects</a>
             <a href="/contact">Contact</a>
+            {% if session.get('username') %}
+                <span style="color:#4caf50;">Logged in as {{ session['username'] }}</span>
+                <a href="/logout">Logout</a>
+            {% else %}
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            {% endif %}
         </div>
         <div class="bubble">
             <span class="section-title"># About Me</span>

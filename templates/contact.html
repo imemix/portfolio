@@ -150,22 +150,35 @@
             <a href="/visualization">Visualization</a>
             <a href="/projects">Projects</a>
             <a href="/contact">Contact</a>
-
+            {% if session.get('username') %}
+                <span style="color:#4caf50;">Logged in as {{ session['username'] }}</span>
+                <a href="/logout">Logout</a>
+            {% else %}
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            {% endif %}
         </div>
         <div class="bubble">
             <span class="section-title"># Business Contact</span>
-            
+            <pre style="background:#181818;border-radius:6px;padding:24px 18px;color:#ffd600;font-family:'Fira Mono',monospace;font-size:1.1em;white-space:pre-wrap;margin:0;">
+<span style="color:#4caf50;">class</span> <span style="color:#2196f3;">ContactForm</span>:
+    <span style="color:#ffd600;">"""</span>
+    Please fill out the form below to get in touch!
+    <span style="color:#ffd600;">"""</span>
+    <span style="color:#4caf50;">def</span> <span style="color:#2196f3;">send_message</span>(<span style="color:#ffd600;">name</span>, <span style="color:#ffd600;">email</span>, <span style="color:#ffd600;">message</span>):
+        <span style="color:#ffd600;">pass</span>
+            </pre>
             {% if message %}
                 <div class="message">{{ message|safe }}</div>
             {% endif %}
-            <form method="post">
-                <label for="name">Name:</label>
-                <input type="text" name="name" id="name" required>
-                <label for="email">Email:</label>
-                <input type="email" name="email" id="email" required>
-                <label for="msg">Message:</label>
-                <textarea name="msg" id="msg" rows="5" maxlength="500" required></textarea>
-                <button type="submit">Send</button>
+            <form method="post" style="margin-top:24px;">
+                <label for="name"><span style="color:#4caf50;">name</span> = </label>
+                <input type="text" name="name" id="name" required style="background:#181818;color:#ffd600;">
+                <label for="email"><span style="color:#4caf50;">email</span> = </label>
+                <input type="email" name="email" id="email" required style="background:#181818;color:#ffd600;">
+                <label for="msg"><span style="color:#4caf50;">message</span> = </label>
+                <textarea name="msg" id="msg" rows="5" maxlength="500" required style="background:#181818;color:#ffd600;"></textarea>
+                <button type="submit" style="background:#4caf50;color:#fff;">Send</button>
             </form>
         </div>
         <div class="bubble">
