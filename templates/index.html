@@ -125,6 +125,13 @@
     </style>
 </head>
 <body>
+    {% if session.get('username') %}
+        <span style="color:#4caf50;">Logged in as {{ session['username'] }}</span>
+        <a href="/logout">Logout</a>
+    {% else %}
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+    {% endif %}
     <div class="container">
         <h1>index_emix.py</h1>
         <div class="nav">
@@ -133,13 +140,7 @@
             <a href="/helicopter">Helicopter Game</a>
             <a href="/projects">Projects</a>
             <a href="/contact">Contact</a>
-            {% if session.get('username') %}
-                <span style="color:#4caf50;">Logged in as {{ session['username'] }}</span>
-                <a href="/logout">Logout</a>
-            {% else %}
-                <a href="/login">Login</a>
-                <a href="/register">Register</a>
-            {% endif %}
+            
         </div>
         <div class="bubble">
             <span class="section-title"># Portfolio</span>
