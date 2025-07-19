@@ -124,7 +124,8 @@
                 <canvas id="myChart" width="700" height="350"></canvas>
             </div>
             <div class="chart-container">
-                <canvas id="commitChart" width="700" height="350"></canvas>
+                <div id="commitLoading" style="color:#ffd600;text-align:center;font-family:'Fira Mono',monospace;">Loading commit data...</div>
+                <canvas id="commitChart" width="700" height="350" style="display:none;"></canvas>
             </div>
         </div>
     </div>
@@ -141,13 +142,19 @@
             return response.json();
         }
 
-        function countLanguages(repos) {
+        async function countAllLanguages(user, repos) {
             const langCount = {};
-            repos.forEach(repo => {
-                if (repo.language) {
-                    langCount[repo.language] = (langCount[repo.language] || 0) + 1;
+            // Fetch languages for each repo (limit to 20 for demo/performance)
+            const promises = repos.slice(0, 20).map(async repo => {
+                const resp = await fetch(`https://api.github.com/repos/${user}/${repo.name}/languages`);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    Object.keys(data).forEach(lang => {
+                        langCount[lang] = (langCount[lang] || 0) + 1;
+                    });
                 }
             });
+            await Promise.all(promises);
             return langCount;
         }
 
@@ -161,7 +168,7 @@
                         label: 'Repo Count',
                         data: Object.values(langCount),
                         backgroundColor: [
-                            '#4caf50', '#2196f3', '#ffd600', '#fff', '#7289da', '#e0e0e0', '#ff5722', '#9c27b0'
+                            '#4caf50', '#2196f3', '#ffd600', '#fff', '#7289da', '#e0e0e0', '#ff5722', '#9c27b0', '#00bcd4', '#8bc34a', '#f44336', '#3f51b5'
                         ],
                         borderColor: '#232323',
                         borderWidth: 2
@@ -192,20 +199,22 @@
 
         // Commits chart (last 12 weeks, all public repos)
         async function fetchCommitActivity(user) {
-            // Get all repos
             const repos = await fetchGithubRepos(user);
             const repoNames = repos.map(r => r.name);
-
-            // Fetch commit activity for each repo (public only, up to 10 for demo)
             const weeks = Array(12).fill(0);
             const promises = repoNames.slice(0, 10).map(async repo => {
-                const resp = await fetch(`https://api.github.com/repos/${user}/${repo}/stats/commit_activity`);
-                if (resp.ok) {
-                    const data = await resp.json();
-                    // Get last 12 weeks
-                    data.slice(-12).forEach((week, i) => {
-                        weeks[i] += week.total;
-                    });
+                try {
+                    const resp = await fetch(`https://api.github.com/repos/${user}/${repo}/stats/commit_activity`);
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        if (Array.isArray(data) && data.length) {
+                            data.slice(-12).forEach((week, i) => {
+                                weeks[i] += week.total;
+                            });
+                        }
+                    }
+                } catch (err) {
+                    // Ignore errors for individual repos
                 }
             });
             await Promise.all(promises);
@@ -213,7 +222,20 @@
         }
 
         function renderCommitChart(weeks) {
-            const ctx = document.getElementById('commitChart').getContext('2d');
+            const loading = document.getElementById('commitLoading');
+            const canvas = document.getElementById('commitChart');
+            loading.style.display = 'none';
+            canvas.style.display = 'block';
+
+            // If all weeks are zero, show a message instead of chart
+            if (weeks.every(w => w === 0)) {
+                canvas.style.display = 'none';
+                loading.style.display = 'block';
+                loading.textContent = "No commit data available for the last 12 weeks.";
+                return;
+            }
+
+            const ctx = canvas.getContext('2d');
             new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -252,8 +274,8 @@
             });
         }
 
-        fetchGithubRepos(githubUser).then(repos => {
-            const langCount = countLanguages(repos);
+        fetchGithubRepos(githubUser).then(async repos => {
+            const langCount = await countAllLanguages(githubUser, repos);
             renderChart(langCount);
         });
 
