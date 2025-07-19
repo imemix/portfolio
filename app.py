@@ -20,6 +20,7 @@ def about():
     return render_template('about.html')
 
 
+
 @app.route('/visualization')
 def visualization():
     """    Route for visualization page.
