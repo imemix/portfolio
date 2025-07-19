@@ -153,7 +153,7 @@
         function setCache(key, value) {
             localStorage.setItem(key, JSON.stringify({value, ts: Date.now()}));
         }
-
+        
         function getCache(key, maxAgeMs) {
             const cached = localStorage.getItem(key);
             if (!cached) return null;
@@ -164,6 +164,7 @@
             return null;
         }
 
+        // Remove all caching for repos and commits
         async function fetchGithubRepos(user) {
             try {
                 const headers = githubToken ? { Authorization: `token ${githubToken}` } : {};
@@ -222,6 +223,32 @@
             return langCount;
         }
 
+        async function fetchCommitActivity(user) {
+            const repos = await fetchGithubRepos(user);
+            if (!Array.isArray(repos) || !repos.length) return Array(12).fill(0);
+            const repoNames = repos.map(r => r.name);
+            const weeks = Array(12).fill(0);
+            try {
+                const promises = repoNames.slice(0, 50).map(async repo => {
+                    try {
+                        const headers = githubToken ? { Authorization: `token ${githubToken}` } : {};
+                        const resp = await fetch(`https://api.github.com/repos/${user}/${repo}/stats/commit_activity?timestamp=${Date.now()}`, { headers, cache: "reload" });
+                        if (resp.ok) {
+                            const data = await resp.json();
+                            if (Array.isArray(data) && data.length >= 12) {
+                                // Sum commits for each week index (last 12 weeks)
+                                for (let i = 0; i < 12; i++) {
+                                    weeks[i] += data[data.length - 12 + i]?.total || 0;
+                                }
+                            }
+                        }
+                    } catch (err) { /* ignore */ }
+                });
+                await Promise.all(promises);
+            } catch (err) { /* ignore */ }
+            return weeks;
+        }
+
         function renderChart(langCount) {
             const ctx = document.getElementById('myChart').getContext('2d');
             if (!Object.keys(langCount).length) {
@@ -267,35 +294,6 @@
         }
 
         // Commits chart (last 12 weeks, all public repos)
-        async function fetchCommitActivity(user) {
-            const cacheKey = `gh_commits_${user}`;
-            const cached = getCache(cacheKey, 24 * 60 * 60 * 1000); // 24 hours
-            if (cached) return cached;
-            const repos = await fetchGithubRepos(user);
-            if (!Array.isArray(repos) || !repos.length) return Array(12).fill(0);
-            const repoNames = repos.map(r => r.name);
-            const weeks = Array(12).fill(0);
-            try {
-                const promises = repoNames.slice(0, 10).map(async repo => {
-                    try {
-                        const headers = githubToken ? { Authorization: `token ${githubToken}` } : {};
-                        const resp = await fetch(`https://api.github.com/repos/${user}/${repo}/stats/commit_activity`, { headers });
-                        if (resp.ok) {
-                            const data = await resp.json();
-                            if (Array.isArray(data) && data.length) {
-                                data.slice(-12).forEach((week, i) => {
-                                    weeks[i] += week.total;
-                            });
-                            }
-                        }
-                    } catch (err) { /* ignore */ }
-                });
-                await Promise.all(promises);
-                setCache(cacheKey, weeks);
-            } catch (err) { /* ignore */ }
-            return weeks;
-        }
-
         function renderCommitChart(weeks) {
             const loading = document.getElementById('commitLoading');
             const canvas = document.getElementById('commitChart');
@@ -362,6 +360,11 @@
                 renderCommitChart(weeks);
             } catch (e) {
                 renderCommitChart([]);
+            }
+        });
+    </script>
+</body>
+</html>
             }
         });
     </script>
