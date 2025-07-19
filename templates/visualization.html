@@ -20,13 +20,13 @@
             margin: 0 auto;
             padding: 0 0 80px 0;
             flex: 1 0 auto;
+            width: 100%;
         }
         .bubble {
             background: #232323;
             border-radius: 8px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.25);
             padding: 32px 40px;
-            margin-top: 60px;
             margin-bottom: 32px;
             font-size: 1.1em;
             border-left: 8px solid #ffd600;
@@ -110,16 +110,26 @@
             <a href="/visualization">Visualization</a>
             <a href="/projects">Projects</a>
             <a href="/contact">Contact</a>
+            {% if session.get('username') %}
+                <span style="color:#4caf50;">Logged in as {{ session['username'] }}</span>
+                <a href="/logout">Logout</a>
+            {% else %}
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            {% endif %}
         </div>
         <div class="bubble">
-            <span class="section-title"># Visualization</span>
-            <p>
-                <span style="color:#ffd600;">"""</span><br>
-                Welcome to the visualization page!<br>
-                Here you'll find interactive charts, graphs, and data visualizations related to my projects.<br>
-                All visualizations are built with a Pythonic approach and a creative twist.<br>
+            <span class="section-title" style="color: #2196f3;"># Visualization</span>
+            <pre style="background:#181818;border-radius:6px; padding:24px 18px;color:#ffd600;font-family:'Fira Mono',monospace;font-size:1.1em;white-space:pre-wrap;margin:0;">
+            <span style="color:#4caf50;">class</span> <span style="color:#2196f3;">Visualization</span>:
                 <span style="color:#ffd600;">"""</span>
-            </p>
+                Welcome to the visualization page! Here you'll 
+                find interactive charts, graphs, and data 
+                visualizations related to my projects.
+                All visualizations are built with a Pythonic 
+                approach and a creative twist.
+                <span style="color:#ffd600;">"""</span>
+            </pre>
             <div class="chart-container">
                 <canvas id="myChart" width="700" height="350"></canvas>
             </div>
@@ -137,29 +147,88 @@
         // Replace with your GitHub username
         const githubUser = "imemix";
 
+        // Add your GitHub token here (keep it secret, do not commit to public repos)
+        const githubToken = ""; // e.g. "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+        function setCache(key, value) {
+            localStorage.setItem(key, JSON.stringify({value, ts: Date.now()}));
+        }
+
+        function getCache(key, maxAgeMs) {
+            const cached = localStorage.getItem(key);
+            if (!cached) return null;
+            try {
+                const obj = JSON.parse(cached);
+                if (Date.now() - obj.ts < maxAgeMs) return obj.value;
+            } catch (e) {}
+            return null;
+        }
+
         async function fetchGithubRepos(user) {
-            const response = await fetch(`https://api.github.com/users/${user}/repos?per_page=100`);
-            return response.json();
+            try {
+                const headers = githubToken ? { Authorization: `token ${githubToken}` } : {};
+                const response = await fetch(`https://api.github.com/users/${user}/repos?per_page=100`, { headers });
+                if (response.status === 403) {
+                    console.error("GitHub API rate limit reached (403 Forbidden). Try again later or use a GitHub token.");
+                    document.getElementById('myChart').parentNode.innerHTML =
+                        '<div style="color:#ffd600;text-align:center;font-family:\'Fira Mono\',monospace;">GitHub API rate limit reached.<br>Please try again later or authenticate with a GitHub token.<br><span style="color:#2196f3;">(403 Forbidden)</span></div>';
+                    return [];
+                }
+                if (!response.ok) throw new Error("GitHub API error: " + response.status);
+                const data = await response.json();
+                // Debug: log repo count and first repo name
+                console.log("Fetched repos:", Array.isArray(data) ? data.length : 0);
+                if (Array.isArray(data) && data.length) {
+                    console.log("First repo:", data[0].name);
+                }
+                return Array.isArray(data) ? data : [];
+            } catch (e) {
+                console.error("Repo fetch error:", e);
+                document.getElementById('myChart').parentNode.innerHTML =
+                    '<div style="color:#ffd600;text-align:center;font-family:\'Fira Mono\',monospace;">Error fetching data from GitHub.<br>' + e + '</div>';
+                return [];
+            }
         }
 
         async function countAllLanguages(user, repos) {
             const langCount = {};
-            // Fetch languages for each repo (limit to 20 for demo/performance)
-            const promises = repos.slice(0, 20).map(async repo => {
-                const resp = await fetch(`https://api.github.com/repos/${user}/${repo.name}/languages`);
-                if (resp.ok) {
-                    const data = await resp.json();
-                    Object.keys(data).forEach(lang => {
-                        langCount[lang] = (langCount[lang] || 0) + 1;
-                    });
-                }
-            });
-            await Promise.all(promises);
+            if (!Array.isArray(repos) || !repos.length) {
+                console.warn("No repos to count languages from.");
+                return langCount;
+            }
+            try {
+                const promises = repos.slice(0, 20).map(async repo => {
+                    try {
+                        const headers = githubToken ? { Authorization: `token ${githubToken}` } : {};
+                        const resp = await fetch(`https://api.github.com/repos/${user}/${repo.name}/languages`, { headers });
+                        if (resp.ok) {
+                            const data = await resp.json();
+                            // Debug: log repo name and languages
+                            console.log("Languages for", repo.name, ":", Object.keys(data));
+                            Object.keys(data).forEach(lang => {
+                                langCount[lang] = (langCount[lang] || 0) + 1;
+                            });
+                        } else {
+                            console.warn("Language fetch failed for", repo.name, resp.status);
+                        }
+                    } catch (err) {
+                        console.error("Language fetch error for", repo.name, err);
+                    }
+                });
+                await Promise.all(promises);
+            } catch (err) {
+                console.error("Language counting error:", err);
+            }
             return langCount;
         }
 
         function renderChart(langCount) {
             const ctx = document.getElementById('myChart').getContext('2d');
+            if (!Object.keys(langCount).length) {
+                ctx.canvas.parentNode.innerHTML =
+                    '<div style="color:#ffd600;text-align:center;font-family:\'Fira Mono\',monospace;">No language data available.<br>Check your GitHub username, public repos, or API rate limits.<br><span style="color:#2196f3;">(See browser console for debug info)</span></div>';
+                return;
+            }
             new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -199,25 +268,31 @@
 
         // Commits chart (last 12 weeks, all public repos)
         async function fetchCommitActivity(user) {
+            const cacheKey = `gh_commits_${user}`;
+            const cached = getCache(cacheKey, 24 * 60 * 60 * 1000); // 24 hours
+            if (cached) return cached;
             const repos = await fetchGithubRepos(user);
+            if (!Array.isArray(repos) || !repos.length) return Array(12).fill(0);
             const repoNames = repos.map(r => r.name);
             const weeks = Array(12).fill(0);
-            const promises = repoNames.slice(0, 10).map(async repo => {
-                try {
-                    const resp = await fetch(`https://api.github.com/repos/${user}/${repo}/stats/commit_activity`);
-                    if (resp.ok) {
-                        const data = await resp.json();
-                        if (Array.isArray(data) && data.length) {
-                            data.slice(-12).forEach((week, i) => {
-                                weeks[i] += week.total;
+            try {
+                const promises = repoNames.slice(0, 10).map(async repo => {
+                    try {
+                        const headers = githubToken ? { Authorization: `token ${githubToken}` } : {};
+                        const resp = await fetch(`https://api.github.com/repos/${user}/${repo}/stats/commit_activity`, { headers });
+                        if (resp.ok) {
+                            const data = await resp.json();
+                            if (Array.isArray(data) && data.length) {
+                                data.slice(-12).forEach((week, i) => {
+                                    weeks[i] += week.total;
                             });
+                            }
                         }
-                    }
-                } catch (err) {
-                    // Ignore errors for individual repos
-                }
-            });
-            await Promise.all(promises);
+                    } catch (err) { /* ignore */ }
+                });
+                await Promise.all(promises);
+                setCache(cacheKey, weeks);
+            } catch (err) { /* ignore */ }
             return weeks;
         }
 
@@ -227,11 +302,10 @@
             loading.style.display = 'none';
             canvas.style.display = 'block';
 
-            // If all weeks are zero, show a message instead of chart
-            if (weeks.every(w => w === 0)) {
+            if (!weeks || weeks.every(w => w === 0)) {
                 canvas.style.display = 'none';
                 loading.style.display = 'block';
-                loading.textContent = "No commit data available for the last 12 weeks.";
+                loading.innerHTML = "No commit data available for the last 12 weeks.<br>Check your GitHub username, public repos, or API rate limits.";
                 return;
             }
 
@@ -275,12 +349,20 @@
         }
 
         fetchGithubRepos(githubUser).then(async repos => {
-            const langCount = await countAllLanguages(githubUser, repos);
-            renderChart(langCount);
+            try {
+                const langCount = await countAllLanguages(githubUser, repos);
+                renderChart(langCount);
+            } catch (e) {
+                renderChart({});
+            }
         });
 
         fetchCommitActivity(githubUser).then(weeks => {
-            renderCommitChart(weeks);
+            try {
+                renderCommitChart(weeks);
+            } catch (e) {
+                renderCommitChart([]);
+            }
         });
     </script>
 </body>
