@@ -96,18 +96,32 @@
             margin: 0;
             font-size: 1em;
         }
+        .page-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #232323;
+            border-bottom: 2px solid #4caf50;
+        }
     </style>
 </head>
 <body>
-    {% if session.get('username') %}
-        <span style="color:#4caf50;">Logged in as {{ session['username'] }}</span>
-        <a href="/logout">Logout</a>
-    {% else %}
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-    {% endif %}
+    
     <div class="container">
-        <h1>helicopter_game.py</h1>
+        <div class="page-nav">
+            <h1>helicopter_game.py</h1>
+            <div class="user-info">
+                {% if session.get('username') %}
+                    <span style="color:#4caf50;">Logged in as {{ session['username'] }}</span>
+                    <a href="/logout">Logout</a>
+                {% else %}
+                    <a href="/login">Login</a>
+                    <a href="/register">Register</a>
+                {% endif %}
+            </div>
+        </div>
+
         <div class="nav">
             <a href="/">Home</a>
             <a href="/visualization">Visualization</a>
