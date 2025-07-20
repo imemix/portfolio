@@ -16,10 +16,11 @@
             flex-direction: column;
         }
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 0 80px 0; /* Add bottom padding for footer */
             flex: 1 0 auto;
+            width: 100%;
         }
         .bubble {
             background: #232323;
@@ -101,39 +102,64 @@
             box-shadow: 0 4px 16px #5865F2;
             background: #5865F2;
         }
+        .page-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #232323;
+            border-bottom: 2px solid #4caf50;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>about_emix.py</h1>
+        <div class="page-nav">
+            <h1>index_emix.py</h1>
+            <div class="user-info">
+                {% if session.get('username') %}
+                    <span style="color:#4caf50;">Logged in as {{ session['username'] }}</span>
+                    <a href="/logout">Logout</a>
+                {% else %}
+                    <a href="/login">Login</a>
+                    <a href="/register">Register</a>
+                {% endif %}
+            </div>
+        </div>
         <div class="nav">
             <a href="/">Home</a>
             <a href="/about">About</a>
+            <a href="/visualization">Visualization</a>
+            <a href="/helicopter">Helicopter Game</a>   
             <a href="/projects">Projects</a>
             <a href="/contact">Contact</a>
-            {% if session.get('username') %}
-                <span style="color:#4caf50;">Logged in as {{ session['username'] }}</span>
-                <a href="/logout">Logout</a>
-            {% else %}
-                <a href="/login">Login</a>
-                <a href="/register">Register</a>
-            {% endif %}
+            
         </div>
         <div class="bubble">
             <span class="section-title"># About Me</span>
             <pre style="background:#181818;border-radius:6px;padding:24px 18px;color:#ffd600;font-family:'Fira Mono',monospace;font-size:1.1em;white-space:pre-wrap;margin:0;">
             <span style="color:#4caf50;">class</span> <span style="color:#2196f3;">Emix</span>:
                 <span style="color:#ffd600;">"""</span>
-                Hi! I'm a 30-year-old programmer with a passion for creating silly games and quirky websites.
-                I love experimenting with <span style="color:#4caf50;">Python</span> and <span style="color:#2196f3;">HTML</span> to build playful projects.
-                My goal is to make the web a more fun and interesting place, one project at a time.
+                Hi! I'm a 30-year-old programmer with a passion 
+                for creating silly games and quirky websites.
+                I love experimenting with <span style="color:#4caf50;">Python</span> and <span style="color:#2196f3;">HTML</span> to build 
+                playful projects.
+                My goal is to make the web a more fun and 
+                interesting place, one project at a time.
 
-                I enjoy learning new technologies and collaborating with creative people.
-                Programming, to me, is a way to express ideas and bring joy to others.
-                I like to add a personal touch and a bit of humor to everything I build, whether it's a game, a web app, or a tool.
+                I enjoy learning new technologies and 
+                collaborating with creative people.
+                Programming, to me, is a way to express ideas and 
+                bring joy to others.
+                I like to add a personal touch and a bit of humor 
+                to everything I build, whether it's a game, a web 
+                app, or a tool.
 
-                When I'm not coding, you'll find me reading about science, playing strategy games, or discovering new music.
-                I'm always looking for new challenges and ways to grow as a developer and as a person.
+                When I'm not coding, you'll find me reading about 
+                science, playing strategy games, or discovering 
+                new music.
+                I'm always looking for new challenges and ways 
+                to grow as a developer and as a person.
                 <span style="color:#ffd600;">"""</span>
             </pre>
         </div>
