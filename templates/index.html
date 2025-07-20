@@ -65,7 +65,8 @@
         .project-list-items {
             list-style-type: none;
             padding: 0;
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
             overflow-x: auto;
             overflow-y: hidden;
@@ -79,7 +80,7 @@
             border: 1px solid #4caf50;
             border-radius: 8px;
             padding: 24px 20px;
-            min-width: 220px;
+            min-width: 200px;
             font-size: 1em;
             margin-bottom: 10px;
             font-family: 'Fira Mono', monospace;
@@ -119,17 +120,6 @@
             padding: 20px;
             background: #232323;
             border-bottom: 2px solid #4caf50;
-        }
-        .pagenav a{
-            color: #ffd600;
-            text-decoration: none;
-            margin-right: 32px;
-            font-family: 'Fira Mono', monospace;
-            font-size: 1.1em;
-            transition: color 0.2s;
-        }
-        .pagenav a:hover {
-            color: #4caf50;
         }
     </style>
 </head>
@@ -176,10 +166,20 @@
             <span class="section-title"># Projects</span>
             <div class="project-list">
                 <ul class="project-list-items">
-                    <li class="project-item">Text Based Mafia Game: <span style="color:#4caf50;">Python</span></li>
-                    <li class="project-item">Chat Application: <span style="color:#2196f3;">Python</span></li>
-                    <li class="project-item">Interactive Quiz: <span style="color:#ffd600;">Python</span></li>
-                    <a style="text-decoration: none;" href="/projects"><li class="project-item " style="height: 41%;">View all: <span style="color:#4caf50;">Showcase</span></li></a>
+                    <li class="project-item">Text Based Mafia Game: <br>
+                        <span style="color:#4caf50;">Python</span> & <span style="color:#00b7ff;">Flask</span>
+                    </li>
+                    <li class="project-item">IRC Chat Client: <br>
+                        <span style="color:#4caf50;">Python</span>
+                    </li>
+                    <li class="project-item">Interactive Quiz: <br>
+                        <span style="color:#4caf50;">Python</span>
+                    </li>
+                    <a style="text-decoration: none;" href="/projects">
+                        <li class="project-item">View all: <br>
+                            <span style="color:#ffd600">Showcase</span>
+                        </li>
+                    </a>
                 </ul>
             </div>
         </div>

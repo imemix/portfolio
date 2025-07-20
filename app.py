@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from utils import DISCORD_WEBHOOK_URL, encrypt_message, decrypt_message
 import requests
 import re
@@ -29,7 +29,8 @@ def hash_password(password):
     return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
 
-
+def github_headers():
+    return {"Authorization": f"token {GITHUB_TOKEN}"} if GITHUB_TOKEN else {}
 
 # ----- routes -----
 
@@ -57,7 +58,7 @@ def projects():
         {"name": "Text Based Mafia Game", "language": "Python", "link": "https://github.com/imemix/mafiagame"},
         {"name": "IRC Chat Client", "language": "Python", "link": "https://github.com/imemix/Chat-app"},
         {"name": "Portfolio Website", "language": "Showcase", "link": "https://github.com/imemix/portfolio"},
-        {"name": "Blackmarket", "language": "Showcase", "link": "-"}
+        {"name": "Private Commission", "language": "Contact", "link": "/contact"}
     ]
     
     return render_template('projects.html', projects=projects_data)
@@ -158,9 +159,31 @@ def logout():
 @app.route('/helicopter')
 def helicopter():
     return render_template('helicopter.html')
-
-
-
+# API route to fetch GitHub repos
+@app.route('/api/github/repos/<username>')
+def api_github_repos(username):
+    url = f"https://api.github.com/users/{username}/repos?per_page=100"
+    resp = requests.get(url, headers=github_headers())
+    if resp.status_code != 200:
+        return jsonify({"error": "GitHub API error", "status": resp.status_code}), resp.status_code
+    return jsonify(resp.json())
+# API route to fetch GitHub commits
+@app.route('/api/github/commits/<username>')
+def api_github_commits(username):
+    url = f"https://api.github.com/users/{username}/repos?per_page=100"
+    repos_resp = requests.get(url, headers=github_headers())
+    if repos_resp.status_code != 200:
+        return jsonify({"error": "GitHub API error", "status": repos_resp.status_code}), repos_resp.status_code
+    repos = repos_resp.json()
+    commit_data = []
+    for repo in repos[:50]:
+        repo_name = repo['name']
+        stats_url = f"https://api.github.com/repos/{username}/{repo_name}/stats/commit_activity"
+        stats_resp = requests.get(stats_url, headers=github_headers())
+        if stats_resp.status_code == 200:
+            stats = stats_resp.json()
+            commit_data.append({"repo": repo_name, "weeks": stats})
+    return jsonify(commit_data)
 
 # ----- Error handlers -----
 @app.errorhandler(400)
