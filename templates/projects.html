@@ -141,11 +141,11 @@
             <h1>projects_emix.py</h1>
             <div class="user-info">
                 {% if session.get('username') %}
-                    <span style="color:#4caf50;">Logged in as {{ session['username'] }}</span>
-                    <a href="/logout">Logout</a>
+                    <span style="color:#4caf50; text-decoration: underline;">Logged in as {{ session['username'] }}</span>
+                    <a href="/logout" style="background: #4caf50; color: #fff; border: none; padding: 5px 10px; border-radius: 8px; font-family: 'Fira Mono', monospace; cursor: pointer;">Logout</a>
                 {% else %}
-                    <a href="/login">Login</a>
-                    <a href="/register">Register</a>
+                    <a href="/login" style="background: #4caf50; color: #fff; border: none; padding: 5px 10px; border-radius: 8px; font-family: 'Fira Mono', monospace; cursor: pointer;">Login</a>
+                    <a href="/register" style="background: #4caf50; color: #fff; border: none; padding: 5px 10px; border-radius: 8px; font-family: 'Fira Mono', monospace; cursor: pointer;">Register</a>
                 {% endif %}
             </div>
         </div>
@@ -155,7 +155,9 @@
             <a href="/visualization">Visualization</a>
             <a href="/helicopter">Helicopter Game</a>
             <a href="/projects">Projects</a>
-            <a href="/contact">Contact</a>
+            {% if session.get('username') %}
+                <a href="/contact">Contact</a>
+            {% endif %}
             
         </div>
         

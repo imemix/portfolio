@@ -153,15 +153,15 @@
 <body>
     
     <div class="container">
-        <div class="page-nav">
+        <div class="page-nav" style="justify-content: space-between; align-items: center; text-decoration: none;">
             <h1>business_contact_emix.py</h1>
             <div class="user-info">
                 {% if session.get('username') %}
-                    <span style="color:#4caf50;">Logged in as {{ session['username'] }}</span>
-                    <a href="/logout">Logout</a>
+                    <span style="color:#4caf50; text-decoration: underline;">Logged in as {{ session['username'] }}</span>
+                    <a href="/logout" style="background: #4caf50; color: #fff; border: none; padding: 5px 10px; border-radius: 8px; font-family: 'Fira Mono', monospace; cursor: pointer;">Logout</a>
                 {% else %}
-                    <a href="/login">Login</a>
-                    <a href="/register">Register</a>
+                    <a href="/login" style="background: #4caf50; color: #fff; border: none; padding: 5px 10px; border-radius: 8px; font-family: 'Fira Mono', monospace; cursor: pointer;">Login</a>
+                    <a href="/register" style="background: #4caf50; color: #fff; border: none; padding: 5px 10px; border-radius: 8px; font-family: 'Fira Mono', monospace; cursor: pointer;">Register</a>
                 {% endif %}
             </div>
         </div>
@@ -171,18 +171,20 @@
             <a href="/visualization">Visualization</a>
             <a href="/helicopter">Helicopter Game</a>
             <a href="/projects">Projects</a>
-            <a href="/contact">Contact</a>
+            {% if session.get('username') %}
+                <a href="/contact">Contact</a>
+            {% endif %}
             
         </div>
         <div class="bubble">
             <span class="section-title"># Business Contact</span>
             <pre style="background:#181818;border-radius:6px;padding:24px 18px;color:#ffd600;font-family:'Fira Mono',monospace;font-size:1.1em;white-space:pre-wrap;margin:0;">
-<span style="color:#4caf50;">class</span> <span style="color:#2196f3;">ContactForm</span>:
-    <span style="color:#ffd600;">"""</span>
-    Please fill out the form below to get in touch!
-    <span style="color:#ffd600;">"""</span>
-    <span style="color:#4caf50;">def</span> <span style="color:#2196f3;">send_message</span>(<span style="color:#ffd600;">name</span>, <span style="color:#ffd600;">email</span>, <span style="color:#ffd600;">message</span>):
-        <span style="color:#ffd600;">pass</span>
+            <span style="color:#4caf50;">class</span> <span style="color:#2196f3;">ContactForm</span>:
+                <span style="color:#ffd600;">"""</span>
+                Please fill out the form below to get in touch!
+                <span style="color:#ffd600;">"""</span>
+                <span style="color:#4caf50;">def</span> <span style="color:#2196f3;">send_message</span>(<span style="color:#ffd600;">name</span>, <span style="color:#ffd600;">email</span>, <span style="color:#ffd600;">message</span>):
+                    <span style="color:#ffd600;">pass</span>
             </pre>
             {% if message %}
                 <div class="message">{{ message|safe }}</div>
