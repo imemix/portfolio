@@ -167,7 +167,8 @@
                 Here are some of my notable projects:
                 <span style="color:#ffd600;">"""</span>
             {% for project in projects %}
-                <span style="color:#4caf50;">def</span> <span style="color:#2196f3;">{{ project.name.replace(' ', '_') }}</span>():
+                <span style="color:#4caf50;">def</span> <span style="color:#2196f3;">{{ project.name.replace(' ', '_') }}</span>
+                (<a href="{{ project.link }}" target="_blank" style="color:#ffd600;text-decoration:underline;">{{ project.link }}</a>)<span style="color:#ffd600;">:</span>
                     <span style="color:#ffd600;">return</span> "<span style="color:#2196f3;">{{ project.language }}</span>"
             {% endfor %}
             </pre>

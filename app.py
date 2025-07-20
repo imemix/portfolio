@@ -54,12 +54,10 @@ def visualization():
 def projects():
     # This route can be expanded to include dynamic project data
     projects_data = [
-        {"name": "Text Based Mafia Game", "language": "Python"},
-        {"name": "Chat Application", "language": "Python"},
-        {"name": "Interactive Quiz", "language": "Python"},
-        {"name": "Weather App", "language": "API"},
-        {"name": "Recipe Finder", "language": "Web App"},
-        {"name": "Portfolio Website", "language": "Showcase"}
+        {"name": "Text Based Mafia Game", "language": "Python", "link": "https://github.com/imemix/mafiagame"},
+        {"name": "IRC Chat Client", "language": "Python", "link": "https://github.com/imemix/Chat-app"},
+        {"name": "Portfolio Website", "language": "Showcase", "link": "https://github.com/imemix/portfolio"},
+        {"name": "Blackmarket", "language": "Showcase", "link": "-"}
     ]
     
     return render_template('projects.html', projects=projects_data)
