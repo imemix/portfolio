@@ -49,6 +49,7 @@ def visualization():
     This can be expanded to include dynamic visualizations or static content.   """
     # Placeholder for visualization content
     # For now, just render a static page
+    
     return render_template('visualization.html')
 # Route for projects page
 @app.route('/projects')
@@ -184,6 +185,26 @@ def api_github_commits(username):
             stats = stats_resp.json()
             commit_data.append({"repo": repo_name, "weeks": stats})
     return jsonify(commit_data)
+# API route to fetch GitHub contributions
+@app.route('/api/github/contributions/<username>')
+def api_github_contributions(username):
+    url = f"https://api.github.com/users/{username}/events/public?per_page=100"
+    resp = requests.get(url, headers=github_headers())
+    if resp.status_code != 200:
+        return jsonify({"labels": [], "data": []})
+    events = resp.json()
+    months = {}
+    for ev in events:
+        date = ev.get("created_at")
+        if date:
+            dt = date[:7]  # YYYY-MM
+            months[dt] = months.get(dt, 0) + 1
+    sorted_months = sorted(months.items())
+    last12 = sorted_months[-12:]
+    return jsonify({
+        "labels": [x[0] for x in last12],
+        "data": [x[1] for x in last12]
+    })
 
 # ----- Error handlers -----
 @app.errorhandler(400)

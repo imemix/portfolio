@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Python Helicopter Game</title>
+    <title>Helicopter Game - My Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -77,41 +77,75 @@
             margin-bottom: 16px;
             text-align: center;
         }
+        .page-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #232323;
+            border-bottom: 2px solid #4caf50;
+        }
         footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             background: #232323;
             color: #ffd600;
             text-align: right;
-            padding: 20px;
+            padding: 5px;
             font-family: 'Fira Mono', monospace;
             border-top: 2px solid #4caf50;
             position: fixed;
             left: 0;
             bottom: 0;
-            width: 98%;
-            margin: 0;
-            flex-shrink: 0;
+            width: 99%;
+            margin: 0 auto;
             z-index: 999;
+
+        }
+        p {
+            font-size: 1.2em;
+            color: #e0e0e0;
+            font-family: 'Fira Mono', monospace;
         }
         footer p {
-            margin: 0;
+            right:0;
             font-size: 1em;
         }
-        .page-nav {
+        footer ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background: #232323;
-            border-bottom: 2px solid #4caf50;
+            gap: 16px;
+            right:0;
+            margin-right: 5px;
         }
-        .page-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background: #232323;
-            border-bottom: 2px solid #4caf50;
+        @media screen and (max-width: 768px) {
+            .page-nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .project-list-items {
+                grid-template-columns: 1fr;
+            }
+            .nav {
+                text-align: center;
+            }
+            .nav a {
+                margin-right: 16px;
+            }
+            footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            footer p, footer ul {
+                margin-bottom: 8px;
+            }
+            
         }
+        
+        
     </style>
 </head>
 <body>
@@ -152,8 +186,27 @@
             <div id="score" class="instructions"></div>
         </div>
     </div>
+    
+        
     <footer>
-        <p># &copy; 2025 helicopter_game.py</p>
+        <p># &copy; 2025 emix_web.py</p>
+        <ul style="list-style:none; padding:0; margin:0;">
+                <li>
+                    <a href="https://github.com/imemix" target="_blank" style="color:#2196f3; text-decoration:none; font-family:'Fira Mono', monospace;">
+                        <img src="/static/github.png" alt="GitHub" style="width:24px;vertical-align:middle;margin-right:8px;">GitHub
+                    </a>
+                </li>
+                <li>
+                    <a href="https://twitter.com/Im_Emix" target="_blank" style="color:#fff; text-decoration:none; font-family:'Fira Mono', monospace;">
+                        <img src="/static/twitter.png" alt="Twitter" style="width:24px;vertical-align:middle;margin-right:8px;">Twitter
+                    </a>
+                </li>
+                <li>
+                    <a href="https://discord.gg/AZbpxu8yK4" target="_blank" style="color:#7289da; text-decoration:none; font-family:'Fira Mono', monospace;">
+                        <img src="/static/discord.png" alt="Discord" style="width:24px;vertical-align:middle;margin-right:8px;">Discord
+                    </a>
+                </li>
+            </ul>
     </footer>
     <script>
         // Simple helicopter game logic
