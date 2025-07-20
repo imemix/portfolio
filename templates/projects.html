@@ -32,22 +32,27 @@
             border-left: 8px solid #4caf50;
         }
         .nav {
-            background: #232323;
-            padding: 16px 0;
+            background: #4caf50;
+            
+            padding: 10px 0;
             text-align: left;
-            margin-bottom: 32px;
-            border-bottom: 2px solid #4caf50;
+            margin-bottom: 25px;
+            border-left: 8px solid #4caf50;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 5px 4px 24px rgba(0,0,0,0.25);
+            z-index: 1;
         }
         .nav a {
-            color: #ffd600;
+            color: #232323;
             text-decoration: none;
             margin-right: 32px;
             font-family: 'Fira Mono', monospace;
             font-size: 1.1em;
             transition: color 0.2s;
+            
         }
         .nav a:hover {
-            color: #4caf50;
+            color: #ffd600;
         }
         h1 {
             color: #4caf50;
@@ -83,7 +88,7 @@
             padding: 24px 20px;
             min-width: 220px;
             font-size: 1em;
-            margin-bottom: 10px;
+            overflow: hidden;
             font-family: 'Fira Mono', monospace;
             transition: border-color 0.2s;
         }
@@ -94,9 +99,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
+            padding: 10px;
             background: #232323;
-            border-bottom: 2px solid #4caf50;
+            border-left: 8px solid #4caf50;
+            margin-top: 15px;
+            border-radius: 8px 8px 0 0 ;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+            z-index: 2;
+        }
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-left: 10px;
         }
         footer {
             display: flex;
@@ -116,11 +131,7 @@
             z-index: 999;
 
         }
-        p {
-            font-size: 1.2em;
-            color: #e0e0e0;
-            font-family: 'Fira Mono', monospace;
-        }
+        
         footer p {
             right:0;
             font-size: 1em;
@@ -169,14 +180,15 @@
             <div class="user-info">
                 {% if session.get('username') %}
                     <span style="color:#4caf50; text-decoration: underline;">Logged in as {{ session['username'] }}</span>
-                    <a href="/logout" style="background: #4caf50; color: #fff; border: none; padding: 5px 10px; border-radius: 8px; font-family: 'Fira Mono', monospace; cursor: pointer;">Logout</a>
+                    <a href="/logout" style="background: #4caf50; color: #232323; border: none; padding: 5px 10px; border-radius: 8px; font-family: 'Fira Mono', monospace; cursor: pointer;">Logout</a>
                 {% else %}
-                    <a href="/login" style="background: #4caf50; color: #fff; border: none; padding: 5px 10px; border-radius: 8px; font-family: 'Fira Mono', monospace; cursor: pointer;">Login</a>
-                    <a href="/register" style="background: #4caf50; color: #fff; border: none; padding: 5px 10px; border-radius: 8px; font-family: 'Fira Mono', monospace; cursor: pointer;">Register</a>
+                    <a href="/login" style="background: #4caf50; color: #232323; border: none; padding: 5px 10px; border-radius: 8px; font-family: 'Fira Mono', monospace; cursor: pointer;">Login</a>
+                    <a href="/register" style="background: #4caf50; color: #232323; border: none; padding: 5px 10px; border-radius: 8px; font-family: 'Fira Mono', monospace; cursor: pointer;">Register</a>
                 {% endif %}
             </div>
         </div>
         <div class="nav">
+            <div class="nav-links">
             <a href="/">Home</a>
             <a href="/about">About</a>
             <a href="/visualization">Visualization</a>
@@ -185,7 +197,7 @@
             {% if session.get('username') %}
                 <a href="/contact">Contact</a>
             {% endif %}
-            
+            </div>
         </div>
         
         
@@ -214,7 +226,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="https://twitter.com/Im_Emix" target="_blank" style="color:#fff; text-decoration:none; font-family:'Fira Mono', monospace;">
+                    <a href="https://twitter.com/Im_Emix" target="_blank" style="color:#ffd600; text-decoration:none; font-family:'Fira Mono', monospace;">
                         <img src="/static/twitter.png" alt="Twitter" style="width:24px;vertical-align:middle;margin-right:8px;">Twitter
                     </a>
                 </li>

@@ -38,10 +38,12 @@ def github_headers():
 @app.route('/')
 def home():
     return render_template('index.html')
+
 # Route for the about page
 @app.route('/about')
 def about():
     return render_template('about.html')
+
 # Route for the visualization page
 @app.route('/visualization')
 def visualization():
@@ -51,6 +53,7 @@ def visualization():
     # For now, just render a static page
     
     return render_template('visualization.html')
+
 # Route for projects page
 @app.route('/projects')
 def projects():
@@ -168,6 +171,7 @@ def api_github_repos(username):
     if resp.status_code != 200:
         return jsonify({"error": "GitHub API error", "status": resp.status_code}), resp.status_code
     return jsonify(resp.json())
+
 # API route to fetch GitHub commits
 @app.route('/api/github/commits/<username>')
 def api_github_commits(username):
@@ -185,6 +189,7 @@ def api_github_commits(username):
             stats = stats_resp.json()
             commit_data.append({"repo": repo_name, "weeks": stats})
     return jsonify(commit_data)
+
 # API route to fetch GitHub contributions
 @app.route('/api/github/contributions/<username>')
 def api_github_contributions(username):
