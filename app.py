@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-from utils import DISCORD_WEBHOOK_URL, encrypt_message, decrypt_message
+from utils import DISCORD_WEBHOOK_URL, GITHUB_TOKEN , encrypt_message, decrypt_message
 import requests
 import re
 import sqlite3
@@ -27,6 +27,7 @@ init_db()
 
 def hash_password(password):
     return hashlib.sha256(password.encode('utf-8')).hexdigest()
+
 
 
 def github_headers():
